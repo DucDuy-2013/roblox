@@ -19,6 +19,32 @@ local function isValidKey(inputKey)
     return false
 end
 
+local function createNotification(text, textColor)
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = LocalPlayer.PlayerGui
+    screenGui.Name = "NotificationGui"
+
+    local notification = Instance.new("TextLabel")
+    notification.Parent = screenGui
+    notification.Size = UDim2.new(0, 300, 0, 50)
+    notification.Position = UDim2.new(1, -310, 1, -60)
+    notification.Text = text
+    notification.TextColor3 = textColor
+    notification.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    notification.BorderSizePixel = 2
+    notification.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    notification.TextScaled = true
+    notification.Font = Enum.Font.SourceSansBold
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = notification
+
+    task.delay(3, function()
+        screenGui:Destroy()
+    end)
+end
+
 local function createKeyInputGui()
     local screenGui = Instance.new("ScreenGui")
     screenGui.Parent = LocalPlayer.PlayerGui
@@ -84,35 +110,39 @@ local function createKeyInputGui()
     cornerDiscord.CornerRadius = UDim.new(0, 10)
     cornerDiscord.Parent = discordButton
 
-    local feedbackLabel = Instance.new("TextLabel")
-    feedbackLabel.Parent = frame
-    feedbackLabel.Size = UDim2.new(1, -20, 0, 30)
-feedbackLabel.Position = UDim2.new(0, 10, 0, 250)
-    feedbackLabel.Text = ""
-    feedbackLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    feedbackLabel.BackgroundTransparency = 1
-    feedbackLabel.Font = Enum.Font.SourceSans
-    feedbackLabel.TextSize = 18
+    local githubButton = Instance.new("TextButton")
+    githubButton.Parent = frame
+    githubButton.Size = UDim2.new(1, -20, 0, 30)
+    githubButton.Position = UDim2.new(0, 10, 0, 200)
+    githubButton.Text = "Copy Github link"
+    githubButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    githubButton.BackgroundColor3 = Color3.fromRGB(100, 100, 250)
+
+    local cornerGithub = Instance.new("UICorner")
+    cornerGithub.CornerRadius = UDim.new(0, 10)
+    cornerGithub.Parent = githubButton
 
     submitButton.MouseButton1Click:Connect(function()
         local inputKey = textBox.Text
         if isValidKey(inputKey) then
-            feedbackLabel.Text = "Key hợp lệ! Đang chạy script..."
-            feedbackLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-            wait(1)
+            createNotification("Key hợp lệ!", Color3.fromRGB(0, 255, 0))
             screenGui:Destroy()
             loadstring(game:HttpGet("https://raw.githubusercontent.com/DucDuy-2013/blue-lock/refs/heads/main/roblox.lua"))()
         else
-            feedbackLabel.Text = "Key không hợp lệ! Vui lòng thử lại."
-            feedbackLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+            createNotification("Key không hợp lệ!", Color3.fromRGB(255, 0, 0))
         end
     end)
 
     discordButton.MouseButton1Click:Connect(function()
         setclipboard("https://discord.gg/your-invite-link")
-        feedbackLabel.Text = "Copied"
-        feedbackLabel.TextColor3 = Color3.fromRGB(0, 150, 255)
+        createNotification("Copied Discord link!", Color3.fromRGB(0, 150, 255))
+    end)
+
+    githubButton.MouseButton1Click:Connect(function()
+        setclipboard("https://github.com/DucDuy-2013/roblox/blob/main/key")
+        createNotification("Copied Github link!", Color3.fromRGB(0, 150, 255))
     end)
 end
 
 createKeyInputGui()
+
